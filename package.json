@@ -1,0 +1,26 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "dev:migrate": "tsx ./migrate",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxt/ui": "^2.8.1",
+    "nuxt": "^3.7.3"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.3.5",
+    "@pinia/nuxt": "^0.4.11",
+    "@popperjs/core": "^2.11.8",
+    "axios": "^1.5.1",
+    "pinia": "^2.1.6",
+    "v-calendar": "next"
+  }
+}
