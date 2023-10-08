@@ -2,55 +2,17 @@
 import { ref } from "vue";
 import PictureInput from "../../components/PictureUpload.vue";
 
+const client = useSupabaseClient()
+
 const isOpen = ref(false);
 const penNames = ref([])
 
-const { pending, data: authors } = await useLazyAsyncData('authors', () => $fetch('/api/authors'))
+const { data: authors } = await useAsyncData('author', async () => {  
+  const { data } = (await client.from('author').select('name, pen_names, status'))
+  console.log(data)
+  return data
+})
 
-const people = [
-  {
-    id: 1,
-    name: "Lindsay Walton",
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-    role: "Member",
-  },
-  {
-    id: 2,
-    name: "Courtney Henry",
-    title: "Designer",
-    email: "courtney.henry@example.com",
-    role: "Admin",
-  },
-  {
-    id: 3,
-    name: "Tom Cook",
-    title: "Director of Product",
-    email: "tom.cook@example.com",
-    role: "Member",
-  },
-  {
-    id: 4,
-    name: "Whitney Francis",
-    title: "Copywriter",
-    email: "whitney.francis@example.com",
-    role: "Admin",
-  },
-  {
-    id: 5,
-    name: "Leonard Krasner",
-    title: "Senior Designer",
-    email: "leonard.krasner@example.com",
-    role: "Owner",
-  },
-  {
-    id: 6,
-    name: "Floyd Miles",
-    title: "Principal Designer",
-    email: "floyd.miles@example.com",
-    role: "Member",
-  },
-];
 </script>
 <template>
   <div>
@@ -93,13 +55,10 @@ const people = [
             <UFormGroup label="Deathdate" name="deathdate">
               <DatePicker  />
             </UFormGroup>
-         
           <UFormGroup label="Pen Names" name="pennames" class="col-span-2">
             <StringArrayInput :values="penNames"/>
           </UFormGroup>
           </div>
-          
-          
         </UForm>
         <template #footer>
           <div class="float-right">
@@ -112,12 +71,11 @@ const people = [
               type="submit"
             />
           </div>
-         
         </template>
       </UCard>
     </UModal>
   </div>
   <div>
-    <UTable :rows="people" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"/>
+    <UTable :rows="authors" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"/>
   </div>
 </template>
