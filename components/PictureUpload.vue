@@ -2,7 +2,7 @@
     <div ref="container" id="picture-input" class="picture-input">
       <div v-if="!supportsUpload" v-html="strings.upload"></div>
       <div v-else-if="supportsPreview">
-        <UContainer class="preview-container"
+        <UContainer class="preview-container lg:px-0 sm:px-0 px-0"
           :style="{maxWidth: previewWidth + 'px', height: previewHeight + 'px', borderRadius: radius + '%'}">
             <canvas ref="previewCanvas"
               class="picture-preview"

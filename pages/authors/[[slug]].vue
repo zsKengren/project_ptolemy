@@ -2,17 +2,20 @@
 import { ref } from "vue";
 import PictureInput from "../../components/PictureUpload.vue";
 
-const client = useSupabaseClient()
+const client = useSupabaseClient();
 
 const isOpen = ref(false);
-const penNames = ref([])
+const penNames = ref([]);
+const tags = ref([])
+const tag = ref("")
 
-const { data: authors } = await useAsyncData('author', async () => {  
-  const { data } = (await client.from('author').select('name, pen_names, status'))
-  console.log(data)
-  return data
-})
-
+const { data: authors } = await useAsyncData("author", async () => {
+  const { data } = await client
+    .from("author")
+    .select("name, pen_names, status");
+  console.log(data);
+  return data;
+});
 </script>
 <template>
   <div>
@@ -30,34 +33,45 @@ const { data: authors } = await useAsyncData('author', async () => {
       <UCard :ui="{ divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
         <template #header>Create Author</template>
         <UForm ref="form" :state="state" @submit="submit">
-          <div class="grid grid-cols-2 gap-2">
-              <picture-input
-            ref="pictureInput"
-            margin="16"
-            width="250"
-            height="250"
-            accept="image/jpeg,image/png"
-            size="10"
-            hideChangeButton="true"
-            @change="onChange"
-            class="col-span-2"
-           />
-          <UFormGroup label="Name" name="name" class="col-span-2">
-            <UInput />
-          </UFormGroup>
-          <UFormGroup label="Description" name="description" class="col-span-2">
-            <UTextarea />
-          </UFormGroup>
+          <div class="grid grid-cols-3 gap-2">
+            <picture-input
+              ref="pictureInput"
+              margin="16"
+              width="250"
+              height="250"
+              accept="image/jpeg,image/png"
+              size="10"
+              hideChangeButton="true"
+              @change="onChange"
+              class="row-span-2"
+            />
+            <UFormGroup label="Name" name="name" class="col-span-2">
+              <UInput />
+            </UFormGroup>
             <UFormGroup label="Birthdate" name="birthdate">
               <!--<DatePicker v-model="date2" @close="close" />-->
-              <DatePicker  />
+              <DatePicker />
             </UFormGroup>
             <UFormGroup label="Deathdate" name="deathdate">
-              <DatePicker  />
+              <DatePicker />
             </UFormGroup>
-          <UFormGroup label="Pen Names" name="pennames" class="col-span-2">
-            <StringArrayInput :values="penNames"/>
-          </UFormGroup>
+            <TagsInput
+                v-model="tag"
+                :tags="tags"
+                @tags-changed="newTags => tags = newTags"
+                class="row-span-3"
+            />
+            <UFormGroup
+              label="Description"
+              name="description"
+              class="col-span-3"
+            >
+              <UTextarea />
+            </UFormGroup>
+           
+            <UFormGroup label="Pen Names" name="pennames" class="col-span-2">
+              <StringArrayInput :values="penNames" />
+            </UFormGroup>
           </div>
         </UForm>
         <template #footer>
@@ -76,6 +90,12 @@ const { data: authors } = await useAsyncData('author', async () => {
     </UModal>
   </div>
   <div>
-    <UTable :rows="authors" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"/>
+    <UTable
+      :rows="authors"
+      :loading-state="{
+        icon: 'i-heroicons-arrow-path-20-solid',
+        label: 'Loading...',
+      }"
+    />
   </div>
 </template>
