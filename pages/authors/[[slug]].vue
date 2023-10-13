@@ -1,12 +1,18 @@
 <script setup>
 import { ref } from "vue";
 import PictureInput from "../../components/PictureUpload.vue";
+import VueTagsInput from "../../components/tags-input/vue-tags-input.vue"
+import TokenInput from '../../components/TokenInput.vue'
 
 const client = useSupabaseClient();
 
 const isOpen = ref(false);
 const penNames = ref([]);
-const tags = ref([])
+const tags = ref([{
+      text: 'valid tag',
+    }, {
+      text: 'valid tag',
+    }])
 const tag = ref("")
 
 const { data: authors } = await useAsyncData("author", async () => {
@@ -55,12 +61,16 @@ const { data: authors } = await useAsyncData("author", async () => {
             <UFormGroup label="Deathdate" name="deathdate">
               <DatePicker />
             </UFormGroup>
-            <TagsInput
+              <vue-tags-input
                 v-model="tag"
                 :tags="tags"
+                class="col-span-3"
                 @tags-changed="newTags => tags = newTags"
-                class="row-span-3"
-            />
+                @tag-order-changed="newTags => tags = newTags"
+              />
+              <TokenInput  v-model="tag"
+                :tags="tags"
+                class="col-span-3"/>     
             <UFormGroup
               label="Description"
               name="description"
