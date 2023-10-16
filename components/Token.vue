@@ -1,14 +1,11 @@
 <template>
-  <div :class="tokenClass" v-bind="attrs">
-    <span
-      v-if="(isLeading && leadingIconName) || $slots.leading"
-      :class="leadingWrapperIconClass"
-    >
-      <slot name="leading" :disabled="disabled" :loading="loading">
+  <component :disabled="disabled" :class="tokenClass" v-bind="attrs" is="button">
+    <span v-if="(isLeading && leadingIconName) || $slots.leading" class:="leadingWrapperIconClass">
+      <slot name="leading" :disabled="disabled">
         <UIcon :name="leadingIconName" :class="leadingIconClass" />
       </slot>
     </span>
-    <slot>
+    <slot :disabled="disabled" :readonly="readonly">
       <span
         v-if="label"
         :class="[truncate ? 'text-left break-all line-clamp-1' : '']"
@@ -16,19 +13,23 @@
         {{ label }}
       </span>
     </slot>
-    <slot name="trailing" :disabled="disabled" :loading="loading">
+    <slot name="trailing" :disabled="disabled" :readonly="readonly">
       <UButton
+        v-if="!readonly"
         color="gray"
         variant="link"
-        :icon="trailingIconName"
+        icon="i-heroicons-x-mark-20-solid"
         :padded="false"
-        :class="trailingIconClass"
+        :class="deleteIconClass"
+        :disabled="disabled"
       />
     </slot>
-  </div>
+  </component>
+
 </template>
 
 <script lang="ts">
+// T-1535 fix icon placement
 import { computed, toRef, defineComponent } from "vue";
 import type { PropType } from "vue";
 import { twMerge, twJoin } from "tailwind-merge";
@@ -79,6 +80,10 @@ export default defineComponent({
       type: [String, Number],
       default: null,
     },
+    value: {
+      type: Object,
+      default: null,
+    },
     class: {
       type: [String, Object, Array] as PropType<any>,
       default: undefined,
@@ -97,15 +102,11 @@ export default defineComponent({
       type: String,
       default: null,
     },
-    trailingIcon: {
-      type: String,
-      default: "i-heroicons-x-mark-20-solid",
-    },
-    trailing: {
-      type: Boolean,
-      default: true,
-    },
     leading: {
+      type: Boolean,
+      default: false,
+    },
+    readonly: {
       type: Boolean,
       default: false,
     },
@@ -116,7 +117,7 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   setup(props) {
     const { ui, attrs } = useUI("token", toRef(props, "ui"), config);
@@ -149,16 +150,8 @@ export default defineComponent({
       );
     });
 
-    const isTrailing = computed(() => {
-      return (props.icon && props.trailing) || props.trailingIcon;
-    });
-
     const leadingIconName = computed(() => {
       return props.leadingIcon || props.icon;
-    });
-
-    const trailingIconName = computed(() => {
-      return props.trailingIcon || props.icon;
     });
 
     const leadingWrapperIconClass = computed(() => {
@@ -172,14 +165,11 @@ export default defineComponent({
     const leadingIconClass = computed(() => {
       return twJoin(
         ui.value.icon.base,
-        appConfig.ui.colors.includes(color.value) &&
-          ui.value.icon.color.replaceAll("{color}", color.value),
-        ui.value.icon.size[size.value],
-        props.loading && "animate-spin"
+        ui.value.icon.size[size.value]
       );
     });
 
-    const trailingIconClass = computed(() => {
+    const deleteIconClass = computed(() => {
       return twJoin(ui.value.icon.base, ui.value.icon.size[size.value]);
     });
 
@@ -188,14 +178,11 @@ export default defineComponent({
       attrs,
       tokenClass,
       isLeading,
-      isTrailing,
       leadingIconName,
       leadingIconClass,
       leadingWrapperIconClass,
-      trailingIconName,
-      trailingIconClass,
+      deleteIconClass,
     };
   },
 });
 </script>
-./token/TokenInput./token/Token

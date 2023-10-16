@@ -1,19 +1,106 @@
 <script setup>
 import { ref } from "vue";
 import PictureInput from "../../components/PictureUpload.vue";
-import VueTagsInput from "../../components/tags-input/vue-tags-input.vue"
-import TokenInput from '../../components/TokenInput.vue'
+import VueTagsInput from "../../components/tags-input/vue-tags-input.vue";
+import TokenInput from "../../components/TokenInput.vue";
 
 const client = useSupabaseClient();
 
 const isOpen = ref(false);
 const penNames = ref([]);
-const tags = ref([{
-      text: 'valid tag',
-    }, {
-      text: 'valid tag',
-    }])
-const tag = ref("")
+const tags_disabled = ref([
+  {
+    label: "disabled 1",
+  },
+]);
+
+const tags_xs = ref([
+  {
+    label: "these",
+  },
+  {
+    label: "are",
+  },
+  {
+    label: "readonly",
+  },
+]);
+
+const tags_sm = ref([
+  {
+    label: "loading",
+  },
+]);
+
+const tags_md = ref([
+  {
+    label: "valid tag",
+  },
+  {
+    label: "valid tag",
+  },
+]);
+
+const tags_lg = ref([
+  {
+    label: "valid tag",
+  },
+  {
+    label: "valid tag",
+  },
+]);
+
+const tags_xl = ref([
+  {
+    label: "valid tag",
+  },
+  {
+    label: "valid tag",
+  },
+]);
+
+const tags_styles = ref([
+  {
+    label: "blue",
+    color: "blue"
+  },
+  {
+    label: "purple",
+    color: "purple"
+  },
+  {
+    label: "white",
+    color: "white"
+  },
+  {
+    label: "gray",
+    color: "gray"
+  },
+  {
+    label: "black",
+    color: "black"
+  },
+  {
+    label: "solid",
+    variant: "solid"
+  },
+  {
+    label: "outline",
+    variant: "outline"
+  },
+  {
+    label: "soft",
+    variant: "soft"
+  },
+  {
+    label: "subtle",
+    variant: "subtle"
+  },
+  {
+    label: "icon",
+    icon: "i-heroicons-arrow-down-circle"
+  },
+]);
 
 const { data: authors } = await useAsyncData("author", async () => {
   const { data } = await client
@@ -61,16 +148,57 @@ const { data: authors } = await useAsyncData("author", async () => {
             <UFormGroup label="Deathdate" name="deathdate">
               <DatePicker />
             </UFormGroup>
-              <vue-tags-input
-                v-model="tag"
-                :tags="tags"
-                class="col-span-3"
-                @tags-changed="newTags => tags = newTags"
-                @tag-order-changed="newTags => tags = newTags"
-              />
-              <TokenInput  v-model="tag"
-                :tags="tags"
-                class="col-span-3"/>     
+            <TokenInput
+              v-model="tags_disabled"
+              class="col-span-3"
+              placeholder="disabled"
+              disabled
+            />
+            <TokenInput
+              v-model="tags_xs"
+              size="xs"
+              required
+              readonly
+              class="col-span-3"
+              placeholder="xs required readonly"
+            />
+            <TokenInput
+              v-model="tags_sm"
+              size="sm"
+              loading
+              trailing
+              class="col-span-3"
+              placeholder="sm loading"
+            />
+            <TokenInput
+              v-model="tags_md"
+              size="md"
+              trailingIcon="i-heroicons-pencil-square"
+              tokenVariant="subtle"
+              class="col-span-3"
+              placeholder="md trailingIcon subtle"
+            />
+            <TokenInput
+              v-model="tags_lg"
+              size="lg"
+              color="blue"
+              tokenVariant="soft"
+              class="col-span-3"
+              placeholder="lg blue soft"
+            />
+            <TokenInput
+              v-model="tags_xl"
+              size="xl"
+              tokenVariant="outline"
+              class="col-span-3"
+              placeholder="xl outline"
+            />
+            <TokenInput
+              v-model="tags_styles"
+              class="col-span-3"
+              placeholder="styles"
+            />
+            
             <UFormGroup
               label="Description"
               name="description"
@@ -78,7 +206,7 @@ const { data: authors } = await useAsyncData("author", async () => {
             >
               <UTextarea />
             </UFormGroup>
-           
+
             <UFormGroup label="Pen Names" name="pennames" class="col-span-2">
               <StringArrayInput :values="penNames" />
             </UFormGroup>

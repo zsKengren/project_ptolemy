@@ -7,7 +7,12 @@ export type TokenColor = keyof typeof token.color | typeof colors[number]
 export type TokenVariant = keyof typeof token.variant | NestedKeyOf<typeof token.color>
 
 export interface Token {
-  label?: string
+  label?: String
   color?: TokenColor
   variant?: TokenVariant
+  class?: [String, Object, Array]
+  icon?: String 
+  value?: Object
+  disabled: boolean
+  readonly: boolean
 }

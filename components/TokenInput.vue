@@ -1,18 +1,20 @@
 <template>
   <div :class="uiWrapper">
-
-    
-    <span v-if="tokensCopy" :class="leadingWrapperClass">
-      <slot name="leading" :disabled="disabled" :loading="loading">
+      <slot name="leading" :disabled="disabled" :loading="loading" :readonly="readonly">
         <Token
-            label="test"
-            v-for="(token, index) in tokensCopy"
-            size="xs"
+            :label="token.label"
+            v-for="(token, index) in tokens"
+            :size="(token.size ? token.size : size)"
             :key="index"
+            :variant="(token.variant ? token.variant : tokenVariant)"
             tabindex="0"
+            :disabled="disabled ? disabled : token.disabled"
+            :readonly="readonly ? readonly : token.readonly"
+            :color="(token.color ? token.color : tokenColor)"
+            :leadingIcon="token.icon"
+            :value="token.value"
           />
       </slot>
-    </span>
 
     <input
       :id="inputId"
@@ -23,10 +25,9 @@
       :placeholder="placeholder"
       :disabled="disabled || loading"
       :class="inputClass"
+      :readonly="readonly"
       v-bind="attrs"
       @input="onInput"
-      @blur="onBlur"
-      @focus="onFocus"
     />
 
     <slot />
@@ -35,7 +36,7 @@
       v-if="(isTrailing && trailingIconName) || $slots.trailing"
       :class="trailingWrapperIconClass"
     >
-      <slot name="trailing" :disabled="disabled" :loading="loading">
+      <slot name="trailing" :disabled="disabled" :loading="loading" :readonly="readonly">
         <UIcon :name="trailingIconName" :class="trailingIconClass" />
       </slot>
     </div>
@@ -43,6 +44,7 @@
 </template>
 
 <script lang="ts">
+// T-1534 fix token flexbox spacing
 import { ref, computed, toRef, onMounted, defineComponent } from "vue";
 import type { PropType } from "vue";
 import { twMerge, twJoin } from "tailwind-merge";
@@ -53,14 +55,23 @@ import { mergeConfig } from "#ui/utils";
 import type { NestedKeyOf, Strategy } from "#ui/types";
 // @ts-expect-error
 import appConfig from "#build/app.config";
-import { tokenInput } from "./token/ui.config";
+import { tokenInput, token } from "./token/ui.config";
 import colors from "#ui-colors";
+import { Token, TokenVariant } from "./token/Token"
+
 
 const config = mergeConfig<typeof tokenInput>(
   appConfig.ui.strategy,
   appConfig.ui.tokenInput,
   tokenInput
 );
+
+const tokenConfig = mergeConfig<typeof token>(
+  appConfig.ui.strategy,
+  appConfig.ui.token,
+  token
+);
+
 
 export default defineComponent({
   components: {
@@ -69,14 +80,13 @@ export default defineComponent({
   data() {
     return {
       newToken: null,
-      tokensCopy: ["one", "two"],
       focused: null,
     };
   },
   inheritAttrs: false,
   props: {
     modelValue: {
-      type: Array,
+      type: Array<Token>,
       default: [],
     },
     id: {
@@ -99,13 +109,13 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    autofocus: {
+    readonly: {
       type: Boolean,
       default: false,
     },
-    icon: {
-      type: String,
-      default: null,
+    autofocus: {
+      type: Boolean,
+      default: false,
     },
     loadingIcon: {
       type: String,
@@ -129,7 +139,7 @@ export default defineComponent({
     },
     size: {
       type: String as PropType<keyof typeof config.size>,
-      default: null,
+      default: "md",
       validator(value: string) {
         return Object.keys(config.size).includes(value);
       },
@@ -171,16 +181,7 @@ export default defineComponent({
       >,
       default: undefined,
     },
-
-    tokens: {
-      type: Array,
-      default: () => [],
-    },
     addOnKey: {
-      type: Array,
-      default: () => [13],
-    },
-    saveOnKey: {
       type: Array,
       default: () => [13],
     },
@@ -192,17 +193,23 @@ export default defineComponent({
       default: true,
       type: Boolean,
     },
-
-    //Edit Tokens (saveOnKey)
+    tokenVariant: {
+      type: String as PropType<TokenVariant>,
+      default: () => tokenConfig.default.variant,
+      validator(value: string) {
+        return [
+          ...Object.keys(tokenConfig.variant),
+          ...Object.values(tokenConfig.color).flatMap((value) => Object.keys(value)),
+        ].includes(value);
+      },
+    },
     //Autocomplete Tokens (autocompleteMinLength, addOnlyFromAutocomplete, autocompleteAlwaysOpen)
     //Max Tags
     //Max Length
-    //validation
-    //avoidAddingDuplicates (isDuplicate, )
     //addFromPaste (Seperator)
     //deleteOnBackspace
   },
-  emits: ["update:modelValue", "change"],
+  emits: ["update:modelValue"],
   setup(props, { emit, slots }) {
     const { ui, attrs } = useUI(
       "tokenInput",
@@ -223,7 +230,7 @@ export default defineComponent({
     };
 
     const onInput = (event: InputEvent) => {
-      emit("update:modelValue", (event.target as HTMLInputElement).value);
+      //emit("update:modelValue", (event.target as HTMLInputElement).value);
       emitFormInput();
     };
 
@@ -232,6 +239,23 @@ export default defineComponent({
         autoFocus();
       }, 100);
     });
+
+    const tokens = computed({
+      get() {
+        return props.modelValue
+      },
+      set(value) {
+        emit('update:modelValue', value)
+      }
+    })
+
+    const tokenColor = computed(() => {
+      if (props.color == "white" || props.color == "gray") {
+        return tokenConfig.default.color
+      }
+
+      return props.color
+    })
 
     const uiWrapper = computed(() => {
       const variant =
@@ -243,6 +267,9 @@ export default defineComponent({
           ui.value.wrapper,
           ui.value.size[size.value],
           variant?.replaceAll('{color}', color.value),
+          ui.value.gap[size.value],
+          props.padded ? ui.value.padding[size.value] : "p-0",
+          
         ));
     })
 
@@ -252,9 +279,7 @@ export default defineComponent({
           ui.value.base,
           ui.value.placeholder,
           ui.value.size[size.value],
-          props.padded ? ui.value.padding[size.value] : "p-0",
-          (isTrailing.value || slots.trailing) &&
-            ui.value.trailing.padding[size.value]
+         
         ),
         props.inputClass
       );
@@ -262,7 +287,6 @@ export default defineComponent({
 
     const isTrailing = computed(() => {
       return (
-        (props.icon && props.trailing) ||
         (props.loading && props.trailing) ||
         props.trailingIcon
       );
@@ -273,15 +297,7 @@ export default defineComponent({
         return props.loadingIcon;
       }
 
-      return props.trailingIcon || props.icon;
-    });
-
-    const leadingWrapperClass = computed(() => {
-      return twJoin(
-        ui.value.icon.leading.wrapper,
-        ui.value.icon.leading.padding[size.value],
-        ui.value.gap[size.value]
-      );
+      return props.trailingIcon;
     });
 
     const trailingWrapperIconClass = computed(() => {
@@ -308,13 +324,15 @@ export default defineComponent({
       attrs,
       // eslint-disable-next-line vue/no-dupe-keys
       name,
+      size,
       inputId,
       tokenInput,
       isTrailing,
+      tokens,
       // eslint-disable-next-line vue/no-dupe-keys
       inputClass,
       uiWrapper,
-      leadingWrapperClass,
+      tokenColor,
       trailingIconName,
       trailingIconClass,
       trailingWrapperIconClass,
