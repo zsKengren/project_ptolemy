@@ -27,6 +27,9 @@
       :class="inputClass"
       :readonly="readonly"
       v-bind="attrs"
+      @keydown.enter="onKeyDown"
+      @keydown.tab="onKeyDown"
+      @keydown.space="onKeyDown"
       @input="onInput"
     />
 
@@ -57,7 +60,8 @@ import type { NestedKeyOf, Strategy } from "#ui/types";
 import appConfig from "#build/app.config";
 import { tokenInput, token } from "./token/ui.config";
 import colors from "#ui-colors";
-import { Token, TokenVariant } from "./token/Token"
+import { TokenVariant } from "./token/Token"
+import Token from "./Token.vue"
 
 
 const config = mergeConfig<typeof tokenInput>(
@@ -76,6 +80,7 @@ const tokenConfig = mergeConfig<typeof token>(
 export default defineComponent({
   components: {
     UIcon,
+    Token,
   },
   data() {
     return {
@@ -86,7 +91,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     modelValue: {
-      type: Array<Token>,
+      type: Array<any>,
       default: [],
     },
     id: {
@@ -181,9 +186,17 @@ export default defineComponent({
       >,
       default: undefined,
     },
-    addOnKey: {
-      type: Array,
-      default: () => [13],
+    addOnEnter: {
+      type: Boolean,
+      default: true,
+    },
+    addOnSpace: {
+      type: Boolean,
+      default: false,
+    },
+    addOnTab: {
+      type: Boolean,
+      default: true,
     },
     addOnBlur: {
       type: Boolean,
@@ -209,8 +222,8 @@ export default defineComponent({
     //addFromPaste (Seperator)
     //deleteOnBackspace
   },
-  emits: ["update:modelValue"],
-  setup(props, { emit, slots }) {
+  emits: ["update:modelValue", "before:add", "before:delete", "click:tag"],
+  setup(props, { slots, emit, expose}) {
     const { ui, attrs } = useUI(
       "tokenInput",
       toRef(props, "ui"),
@@ -228,6 +241,31 @@ export default defineComponent({
         tokenInput.value?.focus();
       }
     };
+
+    const createToken = (label: String) => {
+      //var t = new Tok();
+      //t.label = label;
+
+      //emit("before:add", {t, addTag: (token = t) => addToken(token) })
+
+      //tokens.value.push(t)
+    }
+
+    const addToken = (token: any) => {
+
+    }
+ 
+    const onKeyDown = (event: InputEvent, key: String) => {
+      /*if (props.addOnEnter &&  key === "enter") {
+        
+      } else if (props.addOnTab &&  key === "tab") {
+
+      } else if (props.addOnSpace &&  key === "space") {
+
+      } */
+      //console.log((event.target as HTMLInputElement).value)
+      console.log(props)
+    }
 
     const onInput = (event: InputEvent) => {
       //emit("update:modelValue", (event.target as HTMLInputElement).value);
@@ -329,6 +367,7 @@ export default defineComponent({
       tokenInput,
       isTrailing,
       tokens,
+      onKeyDown,
       // eslint-disable-next-line vue/no-dupe-keys
       inputClass,
       uiWrapper,

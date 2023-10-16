@@ -192,6 +192,7 @@ const { data: authors } = await useAsyncData("author", async () => {
               tokenVariant="outline"
               class="col-span-3"
               placeholder="xl outline"
+              @before:add="() => {}"
             />
             <TokenInput
               v-model="tags_styles"

@@ -1,10 +1,9 @@
 <template>
   <component :disabled="disabled" :class="tokenClass" v-bind="attrs" is="button">
-    <span v-if="(isLeading && leadingIconName) || $slots.leading" class:="leadingWrapperIconClass">
-      <slot name="leading" :disabled="disabled">
-        <UIcon :name="leadingIconName" :class="leadingIconClass" />
-      </slot>
-    </span>
+    <slot name="leading" :disabled="disabled">
+      <UIcon v-if="isLeading && leadingIconName" :name="leadingIconName" :class="leadingIconClass" aria-hidden="true" />
+    </slot>
+
     <slot :disabled="disabled" :readonly="readonly">
       <span
         v-if="label"
