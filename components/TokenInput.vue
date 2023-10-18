@@ -1,20 +1,25 @@
 <template>
   <div :class="uiWrapper">
-      <slot name="leading" :disabled="disabled" :loading="loading" :readonly="readonly">
-        <Token
-            :label="token.label"
-            v-for="(token, index) in tokens"
-            :size="(token.size ? token.size : size)"
-            :key="index"
-            :variant="(token.variant ? token.variant : tokenVariant)"
-            tabindex="0"
-            :disabled="disabled ? disabled : token.disabled"
-            :readonly="readonly ? readonly : token.readonly"
-            :color="(token.color ? token.color : tokenColor)"
-            :leadingIcon="token.icon"
-            :value="token.value"
-          />
-      </slot>
+    <slot
+      name="leading"
+      :disabled="disabled"
+      :loading="loading"
+      :readonly="readonly"
+    >
+      <Token
+        :label="token.label"
+        v-for="(token, index) in tokens"
+        :size="token.size ? token.size : size"
+        :key="index"
+        :variant="token.variant ? token.variant : tokenVariant"
+        tabindex="0"
+        :disabled="disabled ? disabled : token.disabled"
+        :readonly="readonly ? readonly : token.readonly"
+        :color="token.color ? token.color : tokenColor"
+        :leadingIcon="token.icon"
+        :value="token.value"
+      />
+    </slot>
 
     <input
       :id="inputId"
@@ -26,10 +31,10 @@
       :disabled="disabled || loading"
       :class="inputClass"
       :readonly="readonly"
-      v-bind="attrs"
-      @keydown.enter="onKeyDown"
-      @keydown.tab="onKeyDown"
-      @keydown.space="onKeyDown"
+      v-bind="$attrs"
+      @keydown.enter="onKeyDown($event, 'enter')"
+      @keydown.tab="onKeyDown($event, 'tab')"
+      @keydown.space="onKeyDown($event, 'space')"
       @input="onInput"
     />
 
@@ -39,7 +44,12 @@
       v-if="(isTrailing && trailingIconName) || $slots.trailing"
       :class="trailingWrapperIconClass"
     >
-      <slot name="trailing" :disabled="disabled" :loading="loading" :readonly="readonly">
+      <slot
+        name="trailing"
+        :disabled="disabled"
+        :loading="loading"
+        :readonly="readonly"
+      >
         <UIcon :name="trailingIconName" :class="trailingIconClass" />
       </slot>
     </div>
@@ -60,9 +70,9 @@ import type { NestedKeyOf, Strategy } from "#ui/types";
 import appConfig from "#build/app.config";
 import { tokenInput, token } from "./token/ui.config";
 import colors from "#ui-colors";
-import { TokenVariant } from "./token/Token"
-import Token from "./Token.vue"
-
+import { TokenVariant, Token as Tok } from "./token/Token";
+import Token from "./Token.vue";
+import { propsDef } from "v-calendar/dist/types/src/use/calendar";
 
 const config = mergeConfig<typeof tokenInput>(
   appConfig.ui.strategy,
@@ -75,7 +85,6 @@ const tokenConfig = mergeConfig<typeof token>(
   appConfig.ui.token,
   token
 );
-
 
 export default defineComponent({
   components: {
@@ -212,7 +221,9 @@ export default defineComponent({
       validator(value: string) {
         return [
           ...Object.keys(tokenConfig.variant),
-          ...Object.values(tokenConfig.color).flatMap((value) => Object.keys(value)),
+          ...Object.values(tokenConfig.color).flatMap((value) =>
+            Object.keys(value)
+          ),
         ].includes(value);
       },
     },
@@ -221,18 +232,23 @@ export default defineComponent({
     //Max Length
     //addFromPaste (Seperator)
     //deleteOnBackspace
+    onBeforeAdd: Function,
+    onBeforeDelete: Function,
+    onClickTag: Function,
   },
-  emits: ["update:modelValue", "before:add", "before:delete", "click:tag"],
-  setup(props, { slots, emit, expose}) {
-    const { ui, attrs } = useUI(
+  emits: ["update:modelValue", "before-add", "before-delete", "click-tag"],
+  setup(props, { emit, attrs }) {
+    const { ui } = useUI(
       "tokenInput",
       toRef(props, "ui"),
       config,
       toRef(props, "class")
     );
 
-    const { emitFormInput, size, color, inputId, name } =
-      useFormGroup(props, config);
+    const { emitFormInput, size, color, inputId, name } = useFormGroup(
+      props,
+      config
+    );
 
     const tokenInput = ref<HTMLInputElement | null>(null);
 
@@ -243,29 +259,37 @@ export default defineComponent({
     };
 
     const createToken = (label: String) => {
-      //var t = new Tok();
-      //t.label = label;
-
-      //emit("before:add", {t, addTag: (token = t) => addToken(token) })
-
-      //tokens.value.push(t)
-    }
+      var t: Tok = {}
+      t.label = label;
+      return t
+    };
 
     const addToken = (token: any) => {
+      tokens.value.push(token)
+      emit("update:modelValue", tokens)
+    };
 
-    }
- 
     const onKeyDown = (event: InputEvent, key: String) => {
-      /*if (props.addOnEnter &&  key === "enter") {
-        
-      } else if (props.addOnTab &&  key === "tab") {
+      console.log(
+        "enter: " + (props.addOnEnter && key === "enter"),
+        "tab: " + (props.addOnTab && key === "tab"),
+        "space: " + (props.addOnSpace && key === "space")
+      );
 
-      } else if (props.addOnSpace &&  key === "space") {
+      if (
+        (props.addOnEnter && key === "enter") ||
+        (props.addOnTab && key === "tab") ||
+        (props.addOnSpace && key === "space")
+      ) {
+        var target = (event.target as HTMLInputElement)
 
-      } */
-      //console.log((event.target as HTMLInputElement).value)
-      console.log(props)
-    }
+        var t = createToken(target.value)
+
+        if (!props.onBeforeAdd) addToken(t);
+        emit("before-add", {t, submitToken: (token = t) => addToken(token) });
+        target.value = ""
+      }
+    };
 
     const onInput = (event: InputEvent) => {
       //emit("update:modelValue", (event.target as HTMLInputElement).value);
@@ -280,54 +304,46 @@ export default defineComponent({
 
     const tokens = computed({
       get() {
-        return props.modelValue
+        return props.modelValue;
       },
       set(value) {
-        emit('update:modelValue', value)
-      }
-    })
+        emit("update:modelValue", value);
+      },
+    });
 
     const tokenColor = computed(() => {
       if (props.color == "white" || props.color == "gray") {
-        return tokenConfig.default.color
+        return tokenConfig.default.color;
       }
 
-      return props.color
-    })
+      return props.color;
+    });
 
     const uiWrapper = computed(() => {
       const variant =
         ui.value.color?.[color.value as string]?.[props.variant as string] ||
         ui.value.variant[props.variant];
 
-        return twMerge(
+      return twMerge(
         twJoin(
           ui.value.wrapper,
           ui.value.size[size.value],
-          variant?.replaceAll('{color}', color.value),
+          variant?.replaceAll("{color}", color.value),
           ui.value.gap[size.value],
-          props.padded ? ui.value.padding[size.value] : "p-0",
-          
-        ));
-    })
+          props.padded ? ui.value.padding[size.value] : "p-0"
+        )
+      );
+    });
 
     const inputClass = computed(() => {
       return twMerge(
-        twJoin(
-          ui.value.base,
-          ui.value.placeholder,
-          ui.value.size[size.value],
-         
-        ),
+        twJoin(ui.value.base, ui.value.placeholder, ui.value.size[size.value]),
         props.inputClass
       );
     });
 
     const isTrailing = computed(() => {
-      return (
-        (props.loading && props.trailing) ||
-        props.trailingIcon
-      );
+      return (props.loading && props.trailing) || props.trailingIcon;
     });
 
     const trailingIconName = computed(() => {

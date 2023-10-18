@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
 import PictureInput from "../../components/PictureUpload.vue";
-import VueTagsInput from "../../components/tags-input/vue-tags-input.vue";
 import TokenInput from "../../components/TokenInput.vue";
 
 const client = useSupabaseClient();
@@ -187,12 +186,13 @@ const { data: authors } = await useAsyncData("author", async () => {
               placeholder="lg blue soft"
             />
             <TokenInput
+              id="xl_tags"
               v-model="tags_xl"
               size="xl"
               tokenVariant="outline"
               class="col-span-3"
               placeholder="xl outline"
-              @before:add="() => {}"
+              @before-add="console.log('before-add')"
             />
             <TokenInput
               v-model="tags_styles"

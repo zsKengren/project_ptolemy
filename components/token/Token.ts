@@ -13,6 +13,6 @@ export interface Token {
   class?: [String, Object, Array]
   icon?: String 
   value?: Object
-  disabled: boolean
-  readonly: boolean
+  disabled?: boolean
+  readonly?: boolean
 }
