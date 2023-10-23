@@ -35,7 +35,6 @@
       @keydown.enter="onKeyDown($event, 'enter')"
       @keydown.tab="onKeyDown($event, 'tab')"
       @keydown.space="onKeyDown($event, 'space')"
-      @input="onInput"
     />
 
     <slot />
@@ -286,14 +285,9 @@ export default defineComponent({
         var t = createToken(target.value)
 
         if (!props.onBeforeAdd) addToken(t);
-        emit("before-add", {t, submitToken: (token = t) => addToken(token) });
+        emit("before-add", t, (token = t) => addToken(token));
         target.value = ""
       }
-    };
-
-    const onInput = (event: InputEvent) => {
-      //emit("update:modelValue", (event.target as HTMLInputElement).value);
-      emitFormInput();
     };
 
     onMounted(() => {
@@ -391,7 +385,6 @@ export default defineComponent({
       trailingIconName,
       trailingIconClass,
       trailingWrapperIconClass,
-      onInput,
     };
   },
 });

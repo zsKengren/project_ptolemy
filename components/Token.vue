@@ -1,5 +1,5 @@
 <template>
-  <component :disabled="disabled" :class="tokenClass" v-bind="attrs" is="button">
+  <component :disabled="disabled" :class="tokenClass" v-bind="attrs" is="checkbox">
     <slot name="leading" :disabled="disabled">
       <UIcon v-if="isLeading && leadingIconName" :name="leadingIconName" :class="leadingIconClass" aria-hidden="true" />
     </slot>
@@ -117,6 +117,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    selected: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props) {
     const { ui, attrs } = useUI("token", toRef(props, "ui"), config);
