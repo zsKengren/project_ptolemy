@@ -1,5 +1,5 @@
 <template>
-  <component :disabled="disabled" :class="tokenClass" v-bind="attrs" is="checkbox">
+  <div :aria-disabled="disabled" :class="tokenClass" aria-selected="false" v-bind="attrs">
     <slot name="leading" :disabled="disabled">
       <UIcon v-if="isLeading && leadingIconName" :name="leadingIconName" :class="leadingIconClass" aria-hidden="true" />
     </slot>
@@ -23,8 +23,7 @@
         :disabled="disabled"
       />
     </slot>
-  </component>
-
+  </div>
 </template>
 
 <script lang="ts">
@@ -172,6 +171,10 @@ export default defineComponent({
       );
     });
 
+    const isSelected = computed(() => {
+      
+    });
+
     const deleteIconClass = computed(() => {
       return twJoin(ui.value.icon.base, ui.value.icon.size[size.value]);
     });
@@ -179,6 +182,7 @@ export default defineComponent({
     return {
       ui,
       attrs,
+      inputId,
       tokenClass,
       isLeading,
       leadingIconName,

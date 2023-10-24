@@ -1,5 +1,5 @@
 export const token = {
-    base: 'inline-flex items-center cursor-default disabled disabled:cursor-not-allowed disabled:opacity-75',
+    base: 'inline-flex items-center cursor-default aria-disabled aria-disabled:cursor-not-allowed aria-disabled:opacity-75 aria-selected:outline-0',
     rounded: 'rounded-md',
     font: 'font-medium',
     size: {
@@ -18,20 +18,20 @@ export const token = {
       },
     color: {
       white: {
-        solid: 'ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-900 dark:text-white bg-white dark:bg-gray-900 disabled:bg-white dark:disabled:bg-gray-900'
+        solid: 'ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-900 dark:text-white bg-white dark:bg-gray-900 aria-disabled:bg-white dark:aria-disabled:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800/50 aria-selected:ring-2 aria-selected:ring-primary-500 dark:aria-selected:ring-primary-400'
       },
       gray: {
-        solid: 'ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 disabled:bg-gray-50 dark:disabled:bg-gray-800'
+        solid: 'ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 aria-disabled:bg-gray-50 dark:aria-disabled:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700/50 aria-selected:ring-2 aria-selected:ring-primary-500 dark:aria-selected:ring-primary-400'
       },
       black: {
-        solid: 'text-white dark:text-gray-900 bg-gray-900 dark:bg-white disabled:bg-gray-900 dark:disabled:bg-white'
+        solid: 'text-white dark:text-gray-900 bg-gray-900 dark:bg-white aria-disabled:bg-gray-900 dark:aria-disabled:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 aria-selected:ring-inset aria-selected:ring-2 aria-selected:ring-primary-500 dark:aria-selected:ring-primary-400'
       }
     },
     variant: {
-      solid: 'bg-{color}-500 dark:bg-{color}-400 text-white dark:text-gray-900 disabled:bg-{color}-500 dark:disabled:bg-{color}-400',
-      outline: 'text-{color}-500 dark:text-{color}-400 ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 disabled:bg-transparent dark:disabled:bg-transparent',
-      soft: 'bg-{color}-50 dark:bg-{color}-400 dark:bg-opacity-10 text-{color}-500 dark:text-{color}-400 disabled:bg-{color}-50 dark:disabled:bg-{color}-950',
-      subtle: 'bg-{color}-50 dark:bg-{color}-400 dark:bg-opacity-10 text-{color}-500 dark:text-{color}-400 ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 ring-opacity-25 dark:ring-opacity-25 disabled:bg-{color}-50 dark:disabled:bg-{color}-950'
+      solid: 'bg-{color}-500 dark:bg-{color}-400 text-white dark:text-gray-900 aria-disabled:bg-{color}-500 dark:aria-disabled:bg-{color}-400 hover:bg-{color}-600 dark:hover:bg-{color}-500 aria-selected:outline aria-selected:outline-2 aria-selected:outline-offset-2 aria-selected:outline-{color}-500 dark:aria-selected:outline-{color}-400',
+      outline: 'text-{color}-500 dark:text-{color}-400 ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 aria-disabled:bg-transparent dark:aria-disabled:bg-transparent hover:bg-{color}-50 dark:hover:bg-{color}-950 aria-selected:ring-2 aria-selected:ring-{color}-500 dark:aria-selected:ring-{color}-400',
+      soft: 'bg-{color}-50 dark:bg-{color}-400 dark:bg-opacity-10 text-{color}-500 dark:text-{color}-400 aria-disabled:bg-{color}-50 dark:aria-disabled:bg-{color}-950 hover:bg-{color}-100 dark:hover:bg-{color}-900 aria-selected:ring-2 aria-selected:ring-inset aria-selected:ring-{color}-500 dark:aria-selected:ring-{color}-400',
+      subtle: 'bg-{color}-50 dark:bg-{color}-400 dark:bg-opacity-10 text-{color}-500 dark:text-{color}-400 ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 ring-opacity-25 dark:ring-opacity-25 aria-disabled:bg-{color}-50 dark:aria-disabled:bg-{color}-950 hover:bg-{color}-100 dark:hover:bg-{color}-900 aria-selected:ring-2 aria-selected:ring-inset aria-selected:ring-{color}-500 dark:aria-selected:ring-{color}-400'
     },
 
     icon: {

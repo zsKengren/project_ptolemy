@@ -18,6 +18,7 @@
         :color="token.color ? token.color : tokenColor"
         :leadingIcon="token.icon"
         :value="token.value"
+        :selected="token.selected"
       />
     </slot>
 
