@@ -15,4 +15,5 @@ export interface Token {
   value?: Object
   disabled?: boolean
   readonly?: boolean
+  selected?: boolean
 }

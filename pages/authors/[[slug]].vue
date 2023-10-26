@@ -26,35 +26,42 @@ const tags_xs = ref([
 ]);
 
 const tags_sm = ref([
+{
+    label: "selected",
+    selected: "selected"
+  },
   {
     label: "loading",
   },
 ]);
 
 const tags_md = ref([
-  {
-    label: "valid tag",
+{
+    label: "selected",
+    selected: "selected"
   },
   {
-    label: "valid tag",
+    label: "token",
   },
 ]);
 
 const tags_lg = ref([
   {
-    label: "valid tag",
+    label: "selected",
+    selected: "selected"
   },
   {
-    label: "valid tag",
+    label: "token",
   },
 ]);
 
 const tags_xl = ref([
-  {
-    label: "valid tag",
+{
+    label: "selected",
+    selected: "selected"
   },
   {
-    label: "valid tag",
+    label: "loading",
   },
 ]);
 

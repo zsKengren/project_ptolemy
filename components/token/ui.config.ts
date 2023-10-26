@@ -1,5 +1,5 @@
 export const token = {
-    base: 'inline-flex items-center cursor-default aria-disabled aria-disabled:cursor-not-allowed aria-disabled:opacity-75 aria-selected:outline-0',
+    base: 'inline-flex items-center cursor-default aria-disabled aria-disabled:cursor-not-allowed aria-disabled:opacity-75',
     rounded: 'rounded-md',
     font: 'font-medium',
     size: {
@@ -28,7 +28,7 @@ export const token = {
       }
     },
     variant: {
-      solid: 'bg-{color}-500 dark:bg-{color}-400 text-white dark:text-gray-900 aria-disabled:bg-{color}-500 dark:aria-disabled:bg-{color}-400 hover:bg-{color}-600 dark:hover:bg-{color}-500 aria-selected:outline aria-selected:outline-2 aria-selected:outline-offset-2 aria-selected:outline-{color}-500 dark:aria-selected:outline-{color}-400',
+      solid: 'bg-{color}-500 dark:bg-{color}-400 text-white dark:text-gray-900 aria-disabled:bg-{color}-500 dark:aria-disabled:bg-{color}-400 hover:bg-{color}-600 dark:hover:bg-{color}-500 ',
       outline: 'text-{color}-500 dark:text-{color}-400 ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 aria-disabled:bg-transparent dark:aria-disabled:bg-transparent hover:bg-{color}-50 dark:hover:bg-{color}-950 aria-selected:ring-2 aria-selected:ring-{color}-500 dark:aria-selected:ring-{color}-400',
       soft: 'bg-{color}-50 dark:bg-{color}-400 dark:bg-opacity-10 text-{color}-500 dark:text-{color}-400 aria-disabled:bg-{color}-50 dark:aria-disabled:bg-{color}-950 hover:bg-{color}-100 dark:hover:bg-{color}-900 aria-selected:ring-2 aria-selected:ring-inset aria-selected:ring-{color}-500 dark:aria-selected:ring-{color}-400',
       subtle: 'bg-{color}-50 dark:bg-{color}-400 dark:bg-opacity-10 text-{color}-500 dark:text-{color}-400 ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 ring-opacity-25 dark:ring-opacity-25 aria-disabled:bg-{color}-50 dark:aria-disabled:bg-{color}-950 hover:bg-{color}-100 dark:hover:bg-{color}-900 aria-selected:ring-2 aria-selected:ring-inset aria-selected:ring-{color}-500 dark:aria-selected:ring-{color}-400'
@@ -57,11 +57,11 @@ export const token = {
       trailing: {
         wrapper: 'absolute inset-y-0 end-0 flex items-center',
         padding: {
-          xs: 'pe-2',
-          sm: 'pe-2',
-          md: 'pe-2',
-          lg: 'pe-2.5',
-          xl: 'pe-3'
+          xs: 'pe-1',
+          sm: 'pe-1',
+          md: 'pe-1',
+          lg: 'pe-1.5',
+          xl: 'pe-2'
         }
       }
     },

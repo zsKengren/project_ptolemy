@@ -1,5 +1,5 @@
 <template>
-  <div :aria-disabled="disabled" :class="tokenClass" aria-selected="false" v-bind="attrs">
+  <div :aria-disabled="disabled" :class="tokenClass" :aria-selected="selected" v-bind="attrs">
     <slot name="leading" :disabled="disabled">
       <UIcon v-if="isLeading && leadingIconName" :name="leadingIconName" :class="leadingIconClass" aria-hidden="true" />
     </slot>
